@@ -1,0 +1,201 @@
+<html>
+<head>
+	<title>大萍科技</title>
+	<style>
+	body {
+ font: normal 11px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+ color: #4f6b72;
+ background: #E6EAE9;
+ margin: 0;
+}
+
+#wrap {
+	position: relative;
+	margin: 10px 0 0 0;
+	-width: 1400px;
+}
+
+a {
+ color: #c75f3e;
+}
+
+#contact {
+ width: 700px;
+ padding: 0;
+ margin: 0 auto;
+
+}
+
+header {
+	    height: 40px;
+    background: #2fd1da;
+}
+header h2 {
+	font-size: 21px;
+    text-align: center;
+    line-height: 36px;
+    color: #191818;
+}
+caption {
+ padding: 0 0 5px 0;
+ width: 700px;  
+ font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+ text-align: right;
+}
+
+th {
+ font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+ color: #4f6b72;
+ border-right: 1px solid #C1DAD7;
+ border-bottom: 1px solid #C1DAD7;
+ border-top: 1px solid #C1DAD7;
+ letter-spacing: 2px;
+ text-transform: uppercase;
+ text-align: left;
+ padding: 6px 6px 6px 12px;
+ background: #CAE8EA url(images/bg_header.jpg) no-repeat;
+}
+
+th.nobg {
+ border-top: 0;
+ border-left: 0;
+ border-right: 1px solid #C1DAD7;
+ background: none;
+}
+
+td {
+ border-right: 1px solid #C1DAD7;
+ border-bottom: 1px solid #C1DAD7;
+ background: #fff;
+ font-size:11px;
+ padding: 6px 6px 6px 12px;
+ color: #4f6b72;
+}
+
+
+td.alt {
+ background: #F5FAFA;
+ color: #797268;
+}
+
+th.spec {
+ border-left: 1px solid #C1DAD7;
+ border-top: 0;
+ background: #fff url(images/bullet1.gif) no-repeat;
+ font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+}
+
+th.specalt {
+ border-left: 1px solid #C1DAD7;
+ border-top: 0;
+ background: #f5fafa url(images/bullet2.gif) no-repeat;
+ font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+ color: #797268;
+}
+/*---------for IE 5.x bug*/
+html>body td{ font-size:11px;}
+	</style>
+</head>
+<body>
+	<header>
+		<h2>联系人数据</h2>
+	</header>
+	<div id="wrap">
+		<table id="contact">
+			<caption>——大萍科技</caption>
+			<thead>
+				<tr></tr>
+			</thead>
+			<tbody>
+
+			</tbody>
+		</table>
+	</div>
+	<script>
+		function ajax(url,fnSuc,fnFai,method,info,text_or_xml,_this)
+		{
+			//创建ajax对象
+			var oAjax = null;
+			if(window.XMLHttpRequest)
+				oAjax = new XMLHttpRequest();
+			else
+				oAjax = new ActiveXObject("Microsoft.XMLHTTP");
+			//缓存
+			//连接服务器,发送请求
+			if(method == null || method == 'GET')
+			{
+				oAjax.open('GET',url,true);
+				//oAjax.setRequestHeader("If-Modified-Since","Tue, 28 Jul 2016 09:50:35 GMT");
+				oAjax.send();
+			}else if(method == 'POST'){
+				oAjax.open('POST',url,true);
+				//oAjax.setRequestHeader("If-Modified-Since","Tue, 28 Jul 2016 09:50:35 GMT");
+				oAjax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				oAjax.send(info);
+			}
+			//接受返回
+			oAjax.onreadystatechange = function()
+			{
+				if(oAjax.readyState == 4)
+				{
+					if(oAjax.status == 200)
+					{
+						console.log(url);
+						//alert('suc and: ' + oAjax.responseXML);
+						if(text_or_xml == 'text'){
+							if(_this)
+								fnSuc(oAjax.responseText,_this);
+							else
+								fnSuc(oAjax.responseText);
+						}
+						else
+							fnSuc(oAjax.responseXML);
+					}
+					else
+					{
+						console.log('fail');
+						fnFai();
+					}
+				}
+			}
+}
+		var table = document.getElementById("contact");
+		var thead = table.getElementsByTagName("thead")[0];
+		var tbody = table.getElementsByTagName("tbody")[0];
+		var thead_tr = thead.getElementsByTagName("tr")[0];
+		ajax("https://www.dapingkeji.com/custom/xueersi/admin/user", fnSuc, function(){}, "GET", "", "text");
+		function fnSuc(x)
+		{
+			x = JSON.parse(x);
+			console.log(x);
+
+			x = x.data;
+			for(var key in x[0])
+			{
+				var cTh = document.createElement("th");
+					cTh.innerHTML = key;
+				thead.appendChild(cTh);
+			}
+			for(var key in x)
+			{
+				var cTr = document.createElement("tr");
+					// cTr.innerHTML = x[key];
+					for(var key_1 in x[key])
+					{
+						var cTd = document.createElement("td");
+							if(key_1 === "头像"){
+								cTd.innerHTML = "<img src=" + x[key][key_1] + " width=50 />";
+							}else if(key_1 === "性别"){
+								cTd.innerHTML = x[key][key_1] == 2?"":(x[key][key_1] == 1?"男":"女")
+							}else{
+								cTd.innerHTML = x[key][key_1];
+							}
+						cTr.appendChild(cTd);
+					}
+				thead.appendChild(cTr);
+			}
+		}
+
+	</script>
+</body>
+</html>

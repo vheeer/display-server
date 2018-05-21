@@ -1,0 +1,87 @@
+'use strict';
+const config = require('./config');
+const connection = require("./connection");
+const fs = require("fs");//操作文件
+const multer = require('multer');//接收图片
+
+const { host, img_dir, upload_image_dir, upload_image_dir_child } = config;
+
+module.exports = (req, res) => {
+  console.log(req.body);
+  const body = req.body;
+  let str = "";
+  for(var key in body)
+  {
+    console.log("result__")
+    console.log(key);
+    console.log(body[key]);
+    str = key;
+  }
+  // let str = body.split('\'')[1].split('\'')[0];
+  let obj = JSON.parse(str);
+  console.log(obj);
+  // res.send(req.body);
+  let id = obj.uid;
+  
+  // 如果是刚刚上传的，会有response
+  if(obj.response && obj.response.data)
+  {
+    id = obj.response.data.insertId;
+  }
+
+  let query = "";
+  let arr = [];
+  switch (obj.target)
+  {
+    case "caseImgs":
+      query = "update case_img set able = 0 where id = ?;";
+      arr = [ id ];
+      break;
+    case "serviceImgs":
+      query = "update service_img set able = 0 where id = ?;";
+      arr = [ id ];
+      break;
+    case "bannarImgs":
+      query = "update mess set bannar_img = '';";
+      arr = [  ];
+      break;
+    case "showBannarImg":
+      query = "update mess set show_img = null;";
+      arr = [  ];
+      break;
+    case "serviceBannarImg":
+      query = "update mess set service_img = null;";
+      arr = [  ];
+      break;
+    case "companyBannarImg":
+      query = "update mess set company_img = null;";
+      arr = [  ];
+      break;
+    case "cultureBannarImg":
+      query = "update mess set culture_img = null;";
+      arr = [  ];
+      break;
+    case "contactBannarImg":
+      query = "update mess set contact_us_img = null;";
+      arr = [  ];
+      break;
+  }
+  connection.query(query, arr, function(err, rows, fields){
+    if(err)
+      throw err;
+    console.log('The solution is: ', rows);
+    console.log('The fields is: ', fields);
+    if(rows.affectedRows == 1){
+      res.send({ mes: "success" }); 
+      console.log('删除成功!');
+    }else{
+      res.status(200).send({ mes: "fail" });
+      console.log('删除失败!');
+    }
+  });
+  
+  // res.writeHead(200, {
+  //     "Access-Control-Allow-Origin": "*"
+  // });
+  // res.end(JSON.stringify(file)+JSON.stringify(req.body));
+};

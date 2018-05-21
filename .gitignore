@@ -1,2 +1,8 @@
 # dependencies
 /node_modules
+
+#others
+setup-qcloud-sdk.js
+
+#npm
+package-lock.json

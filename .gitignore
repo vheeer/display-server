@@ -1,0 +1,25 @@
+<<<<<<< HEAD
+# dependencies
+/node_modules
+
+#others
+setup-qcloud-sdk.js
+
+#npm
+package-lock.json
+
+#others
+dist*
+*.jpg
+*.png
+*.gif
+=======
+# dependencies
+/node_modules
+
+#others
+setup-qcloud-sdk.js
+
+#npm
+package-lock.json
+>>>>>>> d4a23041367344367cded1f069e668d3f0567c1b
